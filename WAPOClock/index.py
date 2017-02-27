@@ -113,7 +113,7 @@ class MainGui:
 		self.master = master
 		#self.master.minsize(width=666, height=666)
     	#self.master.maxsize(width=666, height=666)
-		
+		self.master.title("Water Polo Clock")
 		self.s = ttk.Style()
 		#self.s.theme_use('default')
 		self.s.configure('BigTime.TLabel', background = "black", font = ('TkDefaultFont',150), )
