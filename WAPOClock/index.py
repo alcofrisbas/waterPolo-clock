@@ -14,7 +14,7 @@ class TimeOut:
 		self.mainFrame.grid()
 		self.isUsed = False
 		
-		self.B = ttk.Button(self.mainFrame, text = "a", command = self.toggle)
+		self.B = ttk.Button(self.mainFrame, text = "", command = self.toggle)
 		self.B.grid(row = 1, column = 0)
 		if self.type == "long":
 			height = 10
