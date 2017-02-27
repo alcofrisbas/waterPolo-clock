@@ -12,9 +12,24 @@ class TimeOut:
 		self.status = False
 		self.mainFrame = ttk.Frame(self.master)
 		self.mainFrame.grid()
+		self.isUsed = False
 		
-		self.B = ttk.Button(self.mainFrame, text = "")
-		self.B.grid(row = 0, column = 0)
+		self.B = ttk.Button(self.mainFrame, text = "a", command = self.toggle)
+		self.B.grid(row = 1, column = 0)
+		if self.type == "long":
+			height = 10
+		else:
+			height = 5
+		self.Box = Text(self.mainFrame, background = self.unused, width = 15, height = height,
+					highlightthickness = 0)
+		self.Box.grid(row = 0, column = 0, padx = 3)
+		
+	def toggle(self):
+		self.isUsed = not self.isUsed
+		if self.isUsed:
+			self.Box.config(background = self.used) 
+		else:
+			self.Box.config(background = self.unused)
 		
 
 class Clock:
@@ -100,8 +115,14 @@ class MainGui:
     	#self.master.maxsize(width=666, height=666)
 		
 		self.s = ttk.Style()
-		self.s.theme_use('default')
-		self.s.configure('Time.TLabel', font = ('TkDefaultFont',75))
+		#self.s.theme_use('default')
+		self.s.configure('BigTime.TLabel', background = "black", font = ('TkDefaultFont',150), )
+		self.s.configure('Time.TLabel', background = "black", font = ('TkDefaultFont',75), )
+		x = self.s.lookup('Time.TLabel', "background")
+		print x
+		self.s.configure('TOused.TButton', background = "blue")
+		self.s.configure('TOunused.TButton', background = "white")
+		
 		
 		self.mainFrame = ttk.Frame(self.master)
 		self.mainFrame.grid()
@@ -145,13 +166,35 @@ class MainGui:
 		self.TOFrame = ttk.LabelFrame(self.lowerFrame, text = "Time outs")
 		self.TOFrame.grid(row = 0, column = 1)
 		
-		self.white1 = TimeOut(self.TOFrame, "long", "TButton", "TButton")
+		TOList = []
+		
+		for i in range(3):
+			f = ttk.Frame(self.TOFrame)
+			f.grid(row = 0, column = i)
+			TOList.append(TimeOut(f, "long", "blue", "white"))
+			
+		
+		f = ttk.Frame(self.TOFrame)
+		f.grid(row = 0, column = 3, sticky = S, padx = (0,20))
+		TOList.append(TimeOut(f, "short", "blue", "white"))
+		
+		f = ttk.Frame(self.TOFrame)
+		f.grid(row = 0, column = 4, sticky = S, padx = (20,0))
+		TOList.append(TimeOut(f, "short", "blue", "white"))
+		
+		for i in range(3):
+			f = ttk.Frame(self.TOFrame)
+			f.grid(row = 0, column = i+5)
+			TOList.append(TimeOut(f, "long", "blue", "white"))
+	
+		
+		
 		
 
 		
-		self.quarterClock = Clock(self.quarterFrame, 420, "Time.TLabel")
+		self.quarterClock = Clock(self.quarterFrame, 420, "BigTime.TLabel")
 		
-		self.shotClock = Clock(self.shotFrame, 35, "Time.TLabel")
+		self.shotClock = Clock(self.shotFrame, 35, "BigTime.TLabel")
 		
 		self.variousClock = Clock(self.varClockF, 120, "Time.TLabel")
 		
