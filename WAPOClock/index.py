@@ -137,7 +137,8 @@ class MainGui:
 		self.s.configure('TOused.TButton', background = "blue")
 		self.s.configure('TOunused.TButton', background = "white")
 		
-		
+		self.mensSeason = True
+
 		self.mainFrame = ttk.Frame(self.master)
 		self.mainFrame.grid()
 		
@@ -189,6 +190,9 @@ class MainGui:
 		self.masterReset = ttk.Button(self.masterFrame, text = "Reset")
 		self.masterReset.grid(row = 1)
 
+		self.menWomen = ttk.Button(self.masterFrame, text = "Men", command = self.toggleShotClock)
+		self.menWomen.grid(row = 2)
+
 		TOList = []
 		
 		for i in range(3):
@@ -217,11 +221,18 @@ class MainGui:
 		
 		self.quarterClock = Clock(self.quarterFrame, 420, "BigTime.TLabel")
 		
-		self.shotClock = Clock(self.shotFrame, 35, "BigTime.TLabel")
+		self.shotClock = Clock(self.shotFrame, 30, "BigTime.TLabel")
 		
 		self.variousClock = Clock(self.varClockF, 120, "Time.TLabel")
 		
-
+	def toggleShotClock(self):
+		self.mensSeason = not self.mensSeason
+		if self.mensSeason:
+			self.shotClock.setClock(30)
+			self.menWomen.config(text='Men')
+		else:
+			self.menWomen.config(text='Women')
+			self.shotClock.setClock(35)
 
 	def masterPlayPause(self):
 		self.quarterClock.playPause()
