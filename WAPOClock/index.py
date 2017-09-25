@@ -187,11 +187,17 @@ class MainGui:
 		self.masterPP = ttk.Button(self.masterFrame, text = "Play Pause", command = self.masterPlayPause)
 		self.masterPP.grid(row = 0)
 
-		self.masterReset = ttk.Button(self.masterFrame, text = "Reset")
+		self.masterReset = ttk.Button(self.masterFrame, text = "Reset", command = self.masterReset)
 		self.masterReset.grid(row = 1)
 
 		self.menWomen = ttk.Button(self.masterFrame, text = "Men", command = self.toggleShotClock)
 		self.menWomen.grid(row = 2)
+
+		self.masterAdd1 = ttk.Button(self.masterFrame, text = "Plus 1", command = self.masterAdd1S)
+		self.masterAdd1.grid(row = 3)
+
+		self.masterAdd1 = ttk.Button(self.masterFrame, text = "Plus 5", command = self.masterAdd5S)
+		self.masterAdd1.grid(row = 4)
 
 		TOList = []
 		
@@ -213,18 +219,24 @@ class MainGui:
 			f = ttk.Frame(self.TOFrame)
 			f.grid(row = 0, column = i+5)
 			TOList.append(TimeOut(f, "long", "blue", "white"))
-	
-		
-		
-		
-
 		
 		self.quarterClock = Clock(self.quarterFrame, 420, "BigTime.TLabel")
 		
 		self.shotClock = Clock(self.shotFrame, 30, "BigTime.TLabel")
 		
 		self.variousClock = Clock(self.varClockF, 120, "Time.TLabel")
-		
+
+		self.quarterClock.reset()
+		self.shotClock.reset()
+	
+	def masterAdd1S(self):
+		self.quarterClock.add1()
+		self.shotClock.add1()
+
+	def masterAdd5S(self):
+		self.quarterClock.add5()
+		self.shotClock.add5()
+
 	def toggleShotClock(self):
 		self.mensSeason = not self.mensSeason
 		if self.mensSeason:
@@ -237,6 +249,10 @@ class MainGui:
 	def masterPlayPause(self):
 		self.quarterClock.playPause()
 		self.shotClock.playPause()
+
+	def masterReset(self):
+		self.quarterClock.reset()
+		self.shotClock.reset()
 		
 	def __update_layout(self):
 		self.master.update_idletasks()
