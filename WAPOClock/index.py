@@ -20,7 +20,7 @@ class TimeOut:
 			height = 10
 		else:
 			height = 5
-		self.Box = Text(self.mainFrame, background = self.unused, width = 15, height = height,
+		self.Box = Text(self.mainFrame, background = self.unused, width = 10, height = height,
 					highlightthickness = 0)
 		self.Box.grid(row = 0, column = 0, padx = 3)
 		
@@ -46,7 +46,7 @@ class Clock:
 		self.theTime.set(self.HMS())
 		
 		self.display = ttk.Label(self.mainFrame, textvariable = self.theTime,  style = style, width = 6)
-		self.display.grid(column = 0, row = 0, columnspan = 3)
+		self.display.grid(column = 0, row = 0, columnspan = 4)
 		self.display.grid_propagate(0)
 
 		
@@ -58,6 +58,12 @@ class Clock:
 		
 		self.rB = ttk.Button(self.mainFrame, text = "Reset", command = self.reset)
 		self.rB.grid(row = 1, column = 1)
+
+		self.p1B = ttk.Button(self.mainFrame, text = "Plus 1", command = self.add1)
+		self.p1B.grid(row = 1, column = 2)
+
+		self.p5B = ttk.Button(self.mainFrame, text = "Plus 5", command = self.add5)
+		self.p5B.grid(row = 1, column = 3)
 		
 	def HMS(self):
 		m,s = divmod(self.currentTime,60)
@@ -107,6 +113,14 @@ class Clock:
 	def setClock(self, newTime):
 		self.initialTime = newTime
 		self.reset()
+
+	def add1(self):
+		self.currentTime += 1
+		self.theTime.set(self.HMS())
+
+	def add5(self):
+		self.currentTime += 5
+		self.theTime.set(self.HMS())
 		
 class MainGui:
 	def __init__(self, master):
@@ -137,8 +151,11 @@ class MainGui:
 		self.quarterFrame.grid(row = 0, column = 0, padx = 2)
 		
 		self.shotFrame = ttk.LabelFrame(self.upperFrame, text = "Shot Clock", width = 250)
-		self.shotFrame.grid(row = 0, column = 1, padx = 2)
+		self.shotFrame.grid(row = 0, column = 2, padx = 2)
 		
+		self.masterFrame = ttk.LabelFrame(self.upperFrame, text = "Master Controls")
+		self.masterFrame.grid(row = 0, column = 1, sticky = N)
+
 		self.variousFrame = ttk.LabelFrame(self.lowerFrame, text = "Various")
 		self.variousFrame.grid(row = 0, column = 0, sticky = W)
 		
@@ -166,6 +183,12 @@ class MainGui:
 		self.TOFrame = ttk.LabelFrame(self.lowerFrame, text = "Time outs")
 		self.TOFrame.grid(row = 0, column = 1)
 		
+		self.masterPP = ttk.Button(self.masterFrame, text = "Play Pause", command = self.masterPlayPause)
+		self.masterPP.grid(row = 0)
+
+		self.masterReset = ttk.Button(self.masterFrame, text = "Reset")
+		self.masterReset.grid(row = 1)
+
 		TOList = []
 		
 		for i in range(3):
@@ -200,7 +223,9 @@ class MainGui:
 		
 
 
-
+	def masterPlayPause(self):
+		self.quarterClock.playPause()
+		self.shotClock.playPause()
 		
 	def __update_layout(self):
 		self.master.update_idletasks()
