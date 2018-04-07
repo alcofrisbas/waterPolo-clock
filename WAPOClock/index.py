@@ -20,7 +20,7 @@ class TimeOut:
 			height = 10
 		else:
 			height = 5
-		self.Box = Text(self.mainFrame, background = self.unused, width = 10, height = height,
+		self.Box = Text(self.mainFrame, background = self.unused, width = 5, height = height,
 					highlightthickness = 0)
 		self.Box.grid(row = 0, column = 0, padx = 3)
 		
@@ -33,12 +33,12 @@ class TimeOut:
 		
 
 class Clock:
-	def __init__(self, master, initialTime, style):
+	def __init__(self, master, initialTime, style, opts=True):
 		self.master = master
 	
     	
 		self.mainFrame = ttk.Frame(self.master)
-		self.mainFrame.grid()
+		self.mainFrame.grid(sticky=E)
 		self.initialTime = initialTime
 		self.currentTime = initialTime
 		
@@ -46,29 +46,33 @@ class Clock:
 		self.theTime.set(self.HMS())
 		
 		self.display = ttk.Label(self.mainFrame, textvariable = self.theTime,  style = style, width = 6)
-		self.display.grid(column = 0, row = 0, columnspan = 4)
+		self.display.grid(column = 0, row = 0, columnspan = 1, sticky = E)
 		self.display.grid_propagate(0)
 
 		
 		self.running = False
 		self.initialized = False
+
+		self.lowFrame = ttk.Frame(self.mainFrame)
+		self.lowFrame.grid(row = 1, column = 0)
 				
-		self.ppB = ttk.Button(self.mainFrame, text = "Pause Play", command = self.playPause)
+		self.ppB = ttk.Button(self.lowFrame, text = "Pause Play", command = self.playPause)
 		self.ppB.grid(row = 1, column = 0)
 		
-		self.rB = ttk.Button(self.mainFrame, text = "Reset", command = self.reset)
+		self.rB = ttk.Button(self.lowFrame, text = "Reset", command = self.reset)
 		self.rB.grid(row = 1, column = 1)
 
-		self.p1B = ttk.Button(self.mainFrame, text = "Plus 1", command = self.add1)
-		self.p1B.grid(row = 1, column = 2)
+		if opts:
+			self.p1B = ttk.Button(self.lowFrame, text = "Plus 1", command = self.add1)
+			self.p1B.grid(row = 1, column = 2)
 
-		self.p5B = ttk.Button(self.mainFrame, text = "Plus 5", command = self.add5)
-		self.p5B.grid(row = 1, column = 3)
+			self.p5B = ttk.Button(self.lowFrame, text = "Plus 5", command = self.add5)
+			self.p5B.grid(row = 1, column = 3)
 		
 	def HMS(self):
 		m,s = divmod(self.currentTime,60)
 		h,m = divmod(m, 60)
-		return "%d:%02d:%02d" % (h, m, s)
+		return "%d:%02d" % (m, s)
 		
 	
 	def clockWorker(self):
@@ -224,7 +228,12 @@ class MainGui:
 		
 		self.shotClock = Clock(self.shotFrame, 30, "BigTime.TLabel")
 		
+<<<<<<< HEAD
+		self.variousClock = Clock(self.varClockF, 120, "Time.TLabel", opts=False)
+		
+=======
 		self.variousClock = Clock(self.varClockF, 120, "Time.TLabel")
+>>>>>>> a14db91b065588ce97bb80b9ced2de710a4db63a
 
 		self.quarterClock.reset()
 		self.shotClock.reset()
