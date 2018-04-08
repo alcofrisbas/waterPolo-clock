@@ -1,5 +1,5 @@
 import threading
-import time
+import time, sys
 from Tkinter import *
 import ttk
 
@@ -32,6 +32,40 @@ class TimeOut:
 			self.Box.config(background = self.unused)
 		
 
+class Score:
+	def __init__(self, master, style):
+		self.master = master
+		self.style = style
+		self.score = 0
+
+		self.theScore = StringVar()
+		self.theScore.set(str(self.score))
+
+		self.mainFrame = ttk.Frame(self.master)
+		self.mainFrame.grid()
+
+
+		self.s = ttk.Label(self.mainFrame, textvariable=self.theScore, style = self.style)
+		self.s.grid(row = 0, column = 0)
+
+		self.buttonFrame = ttk.Frame(self.mainFrame)
+		self.buttonFrame.grid(row = 1, column = 0)
+
+		self.plus = ttk.Button(self.buttonFrame, text = "+", command = self.add1)
+		self.plus.grid(row = 0, column = 1)
+
+		self.minus = ttk.Button(self.buttonFrame, text = "-", command = self.sub1)
+		self.minus.grid(row = 0, column = 0)
+
+	def add1(self):
+		self.score += 1
+		self.theScore.set(str(self.score))
+
+	def sub1(self):
+		self.score -= 1
+		self.theScore.set(str(self.score))
+
+
 class Clock:
 	def __init__(self, master, initialTime, style, opts=True):
 		self.master = master
@@ -54,7 +88,10 @@ class Clock:
 		self.initialized = False
 
 		self.lowFrame = ttk.Frame(self.mainFrame)
-		self.lowFrame.grid(row = 1, column = 0)
+		self.lowFrame.grid(row = 1, column = 0, sticky=W)
+
+		self.botFrame = ttk.Frame(self.mainFrame)
+		self.botFrame.grid(row = 2, column = 0, sticky=W)
 				
 		self.ppB = ttk.Button(self.lowFrame, text = "Pause Play", command = self.playPause)
 		self.ppB.grid(row = 1, column = 0)
@@ -68,6 +105,22 @@ class Clock:
 
 			self.p5B = ttk.Button(self.lowFrame, text = "Plus 5", command = self.add5)
 			self.p5B.grid(row = 1, column = 3)
+
+			self.manualB = ttk.Button(self.botFrame, text = "Manually Reconfigure", command = self.reconfigure)
+			self.manualB.grid(row = 0, column = 0)
+
+			self.reFrame = ttk.Frame(self.botFrame)
+			self.reFrame.grid(row = 0, column = 1)
+			
+			self.reMin = ttk.Entry(self.reFrame, width=3)
+			self.reMin.grid(row = 0, column = 0)
+
+			self.reCO = ttk.Label(self.reFrame, text=":")
+			self.reCO.grid(row = 0, column = 1)
+
+			self.reSec = ttk.Entry(self.reFrame, width=3)
+			self.reSec.grid(row = 0, column = 2)
+
 		
 	def HMS(self):
 		m,s = divmod(self.currentTime,60)
@@ -125,6 +178,11 @@ class Clock:
 	def add5(self):
 		self.currentTime += 5
 		self.theTime.set(self.HMS())
+
+	def reconfigure(self):
+		timeToSet = 60*int(self.reMin.get()) + int(self.reSec.get())
+		self.setClock(timeToSet)
+		
 		
 class MainGui:
 	def __init__(self, master):
@@ -151,11 +209,14 @@ class MainGui:
 		
 		self.lowerFrame = ttk.Frame(self.mainFrame)
 		self.lowerFrame.grid(row = 1, column = 0, sticky = W)
+
+		self.bottomFrame = ttk.Frame(self.mainFrame)
+		self.bottomFrame.grid(row = 2)
 		
-		self.quarterFrame = ttk.LabelFrame(self.upperFrame, text = "Quarter", width = 250)
+		self.quarterFrame = ttk.LabelFrame(self.upperFrame, text = "Quarter")#, width = 250)
 		self.quarterFrame.grid(row = 0, column = 0, padx = 2)
 		
-		self.shotFrame = ttk.LabelFrame(self.upperFrame, text = "Shot Clock", width = 250)
+		self.shotFrame = ttk.LabelFrame(self.upperFrame, text = "Shot Clock")#, width = 250)
 		self.shotFrame.grid(row = 0, column = 2, padx = 2)
 		
 		self.masterFrame = ttk.LabelFrame(self.upperFrame, text = "Master Controls")
@@ -192,7 +253,7 @@ class MainGui:
 		self.masterPP.grid(row = 0)
 
 		self.masterReset = ttk.Button(self.masterFrame, text = "Reset", command = self.masterReset)
-		self.masterReset.grid(row = 1)
+		self.masterReset.grid(row = 5)
 
 		self.menWomen = ttk.Button(self.masterFrame, text = "Men", command = self.toggleShotClock)
 		self.menWomen.grid(row = 2)
@@ -202,6 +263,34 @@ class MainGui:
 
 		self.masterAdd1 = ttk.Button(self.masterFrame, text = "Plus 5", command = self.masterAdd5S)
 		self.masterAdd1.grid(row = 4)
+
+		self.masterSPACER = ttk.Label(self.masterFrame, text = "")
+		self.masterSPACER.grid(row = 1, column = 0)
+
+
+		if len(sys.argv) == 3:
+			#self.teamFrame = ttk.Frame(self.TOFrame)
+			#self.teamFrame.grid(row = 1, column = 0, columnspan = 8)
+			
+			self.team1 = ttk.Label(self.TOFrame, text = sys.argv[1], style = "Time.TLabel")
+			self.team1.grid(row = 1, column = 0, columnspan = 4)
+			
+			self.team2 = ttk.Label(self.TOFrame, text = sys.argv[2], style = "Time.TLabel")
+			self.team2.grid(row = 1, column = 4, columnspan = 4)
+
+			self.score1Frame = ttk.Frame(self.TOFrame)
+			self.score1Frame.grid(row = 2, column = 0, columnspan = 4)
+			
+			self.score1 = Score(self.score1Frame,style="Time.TLabel")
+
+			self.score2Frame = ttk.Frame(self.TOFrame)
+			self.score2Frame.grid(row = 2, column = 4, columnspan = 4)
+			
+			self.score2 = Score(self.score2Frame,style="Time.TLabel")
+			#self.score1.grid(row = 2, column = 0)
+
+
+
 
 		TOList = []
 		
@@ -226,17 +315,19 @@ class MainGui:
 		
 		self.quarterClock = Clock(self.quarterFrame, 420, "BigTime.TLabel")
 		
-		self.shotClock = Clock(self.shotFrame, 30, "BigTime.TLabel")
+		self.shotClock = Clock(self.shotFrame, 30, "BigTime.TLabel", opts=True)
 		
-<<<<<<< HEAD
 		self.variousClock = Clock(self.varClockF, 120, "Time.TLabel", opts=False)
-		
-=======
-		self.variousClock = Clock(self.varClockF, 120, "Time.TLabel")
->>>>>>> a14db91b065588ce97bb80b9ced2de710a4db63a
+
+
 
 		self.quarterClock.reset()
 		self.shotClock.reset()
+
+		self.master.bind("g", self.goal)
+		#self.master.bind("t", self.turnover)
+
+
 	
 	def masterAdd1S(self):
 		self.quarterClock.add1()
@@ -281,6 +372,17 @@ class MainGui:
 		
 	def exclusion(self):
 		self.variousClock.setClock(20)
+
+	def goal(self, event):
+		self.quarterClock.playPause()
+		self.shotClock.reset()
+	# Faulty Code... Can't get out of this bug...
+	# don't use this method
+	def turnover(self, event):
+		self.shotClock.reset()
+		time.sleep(1.01)
+		self.replay()
+		self.shotClock.playPause()
 		
 		
 
